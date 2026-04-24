@@ -1,0 +1,68 @@
+# ========= Basics =========
+# Font: prefer a Nerd Font (better for Neovim/LSP/Starship/icons)
+font-family = JetBrainsMono Nerd Font Mono
+# Explicit CJK fallback to keep Chinese glyph style consistent
+font-family = PingFang SC
+# Force common CJK ranges to use PingFang SC
+font-codepoint-map = U+3000-U+303F=PingFang SC
+font-codepoint-map = U+3400-U+4DBF,U+4E00-U+9FFF,U+F900-U+FAFF=PingFang SC
+font-codepoint-map = U+FF00-U+FFEF=PingFang SC
+font-size = 14
+
+# Smoother glyph rendering (common on macOS)
+font-thicken = false
+font-feature = -calt,-liga,-dlig,+kern
+
+# Cursor
+cursor-style = block
+cursor-style-blink = true
+
+# ========= Appearance =========
+# Catppuccin theme from https://github.com/catppuccin/ghostty
+theme = catppuccin-mocha.conf
+
+# Background opacity (0~1; try 0.85-0.95 for transparency)
+background-opacity = 0.92
+# Blur (if you like a frosted-glass effect)
+# background-blur = 20
+
+# Cell metrics (Ghostty uses relative adjustments)
+adjust-cell-height = 25%
+adjust-cell-width = 0
+
+# ========= Interaction / Usability =========
+# Scrolling
+# Scrollback is in bytes (set to 50MB for practical history)
+scrollback-limit = 52428800
+# Reduce mouse wheel scroll speed
+mouse-scroll-multiplier = discrete:0.5
+# Smoother scrolling (optional)
+# smooth-scroll = true
+
+# Copy/paste: copy on selection (X11-like behavior; disable if unwanted)
+copy-on-select = false
+
+# Paste on right click (enable if preferred)
+right-click-action = paste
+
+# URL detection and opening
+link-url = true
+
+# ========= Keybindings (Neovim/Tmux friendly) =========
+# On macOS, treat Option as Alt and send ESC prefix (important for Meta keys)
+macos-option-as-alt = true
+
+# If you use Cmd+Arrow for word/line navigation, set these as needed:
+# keybind = cmd+left=send_text:\x01
+# keybind = cmd+right=send_text:\x05
+
+# ========= Terminal Behavior =========
+# Default shell (usually not required unless you want to force one)
+# shell = /bin/zsh
+
+# Better color compatibility
+term = xterm-256color
+
+# ========= Performance / Display =========
+# HiDPI / display tuning (defaults are usually fine)
+# If fonts look blurry on external monitors, tweak font-size / line-height

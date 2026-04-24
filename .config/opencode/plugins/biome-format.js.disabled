@@ -1,0 +1,177 @@
+import { access } from "node:fs/promises"
+import { extname, isAbsolute, join, relative, resolve } from "node:path"
+
+const BIOME_EXTENSIONS = new Set([
+  ".js",
+  ".jsx",
+  ".ts",
+  ".tsx",
+  ".json",
+  ".css",
+  ".html",
+  ".md",
+  ".yaml",
+  ".yml",
+])
+
+export const BiomeFormatPlugin = async ({ client, worktree, directory }) => {
+  const root = worktree || directory
+  const formatting = new Set()
+  let biomeEnabledCache
+
+  async function hasBiomeConfig() {
+    if (biomeEnabledCache !== undefined) return biomeEnabledCache
+
+    if (!root) {
+      biomeEnabledCache = false
+      return biomeEnabledCache
+    }
+
+    for (const name of ["biome.json", "biome.jsonc"]) {
+      try {
+        await access(join(root, name))
+        biomeEnabledCache = true
+        return biomeEnabledCache
+      } catch {
+        // Try next candidate.
+      }
+    }
+
+    biomeEnabledCache = false
+    return biomeEnabledCache
+  }
+
+  function getRelativePath(rawPath) {
+    if (!rawPath || !root) return null
+
+    const absolutePath = isAbsolute(rawPath) ? rawPath : resolve(root, rawPath)
+    const relativePath = relative(root, absolutePath)
+
+    if (relativePath.startsWith("..") || relativePath.includes("../")) return null
+
+    return {
+      absolutePath,
+      relativePath,
+      extension: extname(absolutePath).toLowerCase(),
+    }
+  }
+
+  function extractPatchPaths(patchText) {
+    if (typeof patchText !== "string") return []
+
+    const paths = new Set()
+    for (const line of patchText.split("\n")) {
+      let match = line.match(/^\*\*\* (?:Add|Update) File: (.+)$/)
+      if (match) {
+        paths.add(match[1].trim())
+        continue
+      }
+
+      match = line.match(/^\*\*\* Move to: (.+)$/)
+      if (match) {
+        paths.add(match[1].trim())
+      }
+    }
+
+    return [...paths]
+  }
+
+  function extractOutputFilePaths(output) {
+    const files = output?.metadata?.files
+    if (!Array.isArray(files)) return []
+
+    const paths = new Set()
+    for (const file of files) {
+      if (typeof file?.relativePath === "string") paths.add(file.relativePath)
+      else if (typeof file?.filePath === "string") paths.add(file.filePath)
+    }
+    return [...paths]
+  }
+
+  async function log(level, message, extra = {}) {
+    try {
+      await client.app.log({
+        body: {
+          service: "biome-format-plugin",
+          level,
+          message,
+          extra,
+        },
+      })
+    } catch {
+      // Ignore logging failures.
+    }
+  }
+
+  async function formatFile(rawPath, source) {
+    if (!(await hasBiomeConfig())) return
+
+    const pathInfo = getRelativePath(rawPath)
+    if (!pathInfo) return
+
+    const { absolutePath, relativePath, extension } = pathInfo
+
+    if (!BIOME_EXTENSIONS.has(extension)) return
+    if (formatting.has(relativePath)) return
+
+    try {
+      await access(absolutePath)
+    } catch {
+      return
+    }
+
+    formatting.add(relativePath)
+
+    try {
+      const proc = Bun.spawn(["bun", "x", "@biomejs/biome", "format", "--write", relativePath], {
+        cwd: root,
+        stdout: "pipe",
+        stderr: "pipe",
+      })
+
+      const exitCode = await proc.exited
+      if (exitCode !== 0) {
+        const stderr = await new Response(proc.stderr).text()
+        await log("warn", "Biome format failed", {
+          file: relativePath,
+          source,
+          exitCode,
+          stderr,
+        })
+      }
+    } catch (error) {
+      await log("error", "Biome format threw", {
+        file: relativePath,
+        source,
+        error: error instanceof Error ? error.message : String(error),
+      })
+    } finally {
+      formatting.delete(relativePath)
+    }
+  }
+
+  return {
+    "tool.execute.after": async (input, output) => {
+      if (input?.tool === "apply_patch") {
+        const patchPaths = [...new Set([
+          ...extractPatchPaths(input?.args?.patchText),
+          ...extractOutputFilePaths(output),
+        ])]
+        for (const patchPath of patchPaths) {
+          await formatFile(patchPath, "tool.execute.after:apply_patch")
+        }
+        return
+      }
+
+      if (input?.tool === "edit" || input?.tool === "write" || input?.tool === "multiedit") {
+        await formatFile(output?.args?.filePath, `tool.execute.after:${input.tool}`)
+      }
+    },
+    "file.edited": async (event) => {
+      const rawPath = typeof event?.path === "string" ? event.path : typeof event?.file === "string" ? event.file : null
+      await formatFile(rawPath, "file.edited")
+    },
+  }
+}
+
+export default BiomeFormatPlugin

@@ -1,0 +1,6 @@
+**/.DS_Store
+**/node_modules/
+**/.git/
+
+# Local/runtime state
+.config/opencode/opencode-notifier-state.json
