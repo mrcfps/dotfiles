@@ -3,21 +3,27 @@
   "presets": {
     "openai": {
       "orchestrator": {
-        "model": "openai/gpt-5.5",
+        "model": "openai/gpt-5.5-fast",
         "skills": [
           "*"
         ],
         "mcps": [
-          "websearch"
+          "*",
+          "!context7"
         ]
       },
       "oracle": {
-        "model": "openrouter/anthropic/claude-opus-4.7",
+        "model": "openai/gpt-5.5-fast",
+        "variant": "high",
         "skills": [],
         "mcps": []
       },
+      "council": {
+        "model": "openai/gpt-5.5-fast"
+      },
       "librarian": {
-        "model": "openai/gpt-5.4-mini",
+        "model": "openai/gpt-5.3-codex-spark",
+        "variant": "low",
         "skills": [],
         "mcps": [
           "websearch",
@@ -26,7 +32,7 @@
         ]
       },
       "explorer": {
-        "model": "openai/gpt-5.4-mini",
+        "model": "openai/gpt-5.3-codex-spark",
         "variant": "low",
         "skills": [],
         "mcps": []
@@ -39,11 +45,39 @@
         "mcps": []
       },
       "fixer": {
-        "model": "openai/gpt-5.3-codex",
+        "model": "openai/gpt-5.3-codex-spark",
         "variant": "low",
         "skills": [],
         "mcps": []
       }
     }
+  },
+  "multiplexer": {
+    "type": "auto",
+    "layout": "main-vertical",
+    "main_pane_size": 60
+  },
+  "council": {
+    "presets": {
+      "default": {
+        "alpha": {
+          "model": "openrouter/anthropic/claude-opus-4.7",
+          "variant": "high"
+        },
+        "beta": {
+          "model": "google-vertex/gemini-3.1-pro-preview",
+          "variant": "high"
+        },
+        "gamma": {
+          "model": "openrouter/moonshotai/kimi-k2.6"
+        }
+      }
+    }
+  },
+  "todoContinuation": {
+    "maxContinuations": 50,
+    "cooldownMs": 3000,
+    "autoEnable": false,
+    "autoEnableThreshold": 4
   }
 }
