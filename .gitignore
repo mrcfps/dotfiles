@@ -4,3 +4,6 @@
 
 # Local/runtime state
 .config/opencode/opencode-notifier-state.json
+
+# Machine-local skill symlinks
+.config/opencode/skills/
