@@ -4,6 +4,12 @@
 
 # Local/runtime state
 .config/opencode/opencode-notifier-state.json
+.config/opencode/*.bak
+
+# Local opencode npm/bun state
+.config/opencode/package.json
+.config/opencode/package-lock.json
+.config/opencode/bun.lock
 
 # Machine-local skill symlinks
 .config/opencode/skills/
