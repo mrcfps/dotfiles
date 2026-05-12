@@ -32,9 +32,28 @@ api.nvim_create_autocmd("FileType", {
   end,
 })
 
-api.nvim_create_autocmd({ "FocusGained", "BufEnter" }, {
+local function checktime_if_needed()
+  if vim.fn.mode() == "c" then
+    return
+  end
+
+  if vim.bo.buftype ~= "" then
+    return
+  end
+
+  pcall(vim.cmd, "checktime")
+end
+
+api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "TermClose", "TermLeave" }, {
   group = general_group,
-  command = "checktime",
+  callback = checktime_if_needed,
+})
+
+api.nvim_create_autocmd("FileChangedShellPost", {
+  group = general_group,
+  callback = function()
+    vim.notify("File changed on disk. Buffer reloaded.", vim.log.levels.INFO, { title = "nvim" })
+  end,
 })
 
 local git_group = api.nvim_create_augroup("_git", { clear = true })
