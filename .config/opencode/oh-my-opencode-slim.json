@@ -3,7 +3,7 @@
   "presets": {
     "openai": {
       "orchestrator": {
-        "model": "openai/gpt-5.5",
+        "model": "openai/gpt-5.4",
         "skills": [
           "*"
         ],
@@ -19,7 +19,7 @@
         "mcps": []
       },
       "council": {
-        "model": "openai/gpt-5.5"
+        "model": "openai/gpt-5.4"
       },
       "librarian": {
         "model": "openai/gpt-5.4-mini",
