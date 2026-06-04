@@ -38,7 +38,7 @@
         "mcps": []
       },
       "designer": {
-        "model": "openrouter/anthropic/claude-opus-4.7",
+        "model": "openrouter/anthropic/claude-opus-4.8",
         "variant": "medium",
         "skills": [
           "agent-browser"
@@ -63,7 +63,7 @@
     "presets": {
       "default": {
         "alpha": {
-          "model": "openrouter/anthropic/claude-opus-4.7",
+          "model": "openrouter/anthropic/claude-opus-4.8",
           "variant": "high"
         },
         "beta": {
