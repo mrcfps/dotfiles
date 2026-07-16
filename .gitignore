@@ -5,6 +5,7 @@
 # Local/runtime state
 .config/opencode/opencode-notifier-state.json
 .config/opencode/*.bak
+.config/opencode/.oh-my-opencode-slim/
 
 # Local opencode npm/bun state
 .config/opencode/package.json
