@@ -16,17 +16,7 @@
       "disabled": true
     }
   },
-  "mcp": {
-    "railway": {
-      "command": [
-        "railway",
-        "mcp"
-      ],
-      "enabled": true,
-      "type": "local"
-    }
-  },
-  "model": "openai/gpt-5.4",
+  "model": "openai/gpt-5.6-sol",
   "permission": {
     "edit": {
       "/tmp/**": "allow"
@@ -40,8 +30,8 @@
   },
   "plugin": [
     "@mohak34/opencode-notifier@0.1.34",
-    "oh-my-opencode-slim@1.1.1",
-    "btw-opencode@0.0.1"
+    "btw-opencode@0.0.1",
+    "oh-my-opencode-slim"
   ],
   "provider": {
     "openrouter": {
@@ -51,5 +41,6 @@
       }
     }
   },
-  "theme": "catppuccin"
+  "theme": "catppuccin",
+  "lsp": true
 }

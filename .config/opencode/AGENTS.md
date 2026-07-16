@@ -58,6 +58,41 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. Git Branch Safety
+
+**Never commit directly on `main` unless explicitly told to do so.**
+
+- Before committing, check the current branch.
+- If on `main`, create or ask to create a new branch before making commits.
+- Prefer opening a pull request instead of pushing directly to `main`.
+- Only commit on `main` when the user explicitly instructs you to commit on `main`.
+
+## 5b. No Admin Merge Bypass
+
+**Never use admin privileges to bypass review / branch protection and force-merge a PR.**
+
+- Do not run `gh pr merge --admin` or any equivalent admin override.
+- Do not use GitHub UI "Merge without waiting for requirements to be met".
+- Do not disable, skip, or weaken required checks/reviewers to force a merge.
+- Do not self-approve + immediately merge your own PR to satisfy protection.
+- If merge is blocked, stop and report the blocker. Wait for real review/checks.
+- Incident hotfixes may patch live systems temporarily, but Git still lands via a normal reviewed PR. Urgency is not an exception.
+
+## 6. Shell Quoting for Markdown and PR Bodies
+
+**Never put Markdown containing backticks inside a double-quoted shell argument.**
+
+Failure mode to avoid:
+- I ran `gh pr edit --body "... show `未开始` ..."`.
+- Because the argument was double-quoted, zsh still treated backticks as command substitution.
+- The shell tried to execute `未开始`, producing `zsh: command not found: 未开始` and risking a malformed PR body.
+
+Rules:
+- For `gh pr create/edit --body` or any shell command containing Markdown/code spans, prefer a single-quoted body.
+- If the body may contain single quotes, use a temp file or heredoc-style file creation outside the command, then pass `--body-file`.
+- Before blaming `gh` or GitHub formatting, check whether the shell interpreted characters first: backticks, `$()`, `$VAR`, `!`, and quotes.
+- When fixing a formatting mistake, verify the rendered/returned body with `gh pr view --json body --jq .body` if correctness matters.
+
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

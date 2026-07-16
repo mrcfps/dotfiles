@@ -3,7 +3,8 @@
   "presets": {
     "openai": {
       "orchestrator": {
-        "model": "openai/gpt-5.4",
+        "model": "xai/grok-4.5",
+        "variant": "high",
         "skills": [
           "*"
         ],
@@ -13,41 +14,39 @@
         ]
       },
       "oracle": {
-        "model": "openai/gpt-5.5",
+        "model": "openai/gpt-5.6-sol",
         "variant": "high",
-        "skills": [],
+        "skills": ["simplify"],
         "mcps": []
       },
       "council": {
-        "model": "openai/gpt-5.4"
+        "model": "openai/gpt-5.6-terra"
       },
       "librarian": {
-        "model": "openai/gpt-5.4-mini",
+        "model": "xai/grok-4.5",
         "variant": "low",
         "skills": [],
         "mcps": [
           "websearch",
           "context7",
-          "grep_app"
+          "gh_grep"
         ]
       },
       "explorer": {
-        "model": "openai/gpt-5.4-mini",
+        "model": "xai/grok-4.5",
         "variant": "low",
         "skills": [],
         "mcps": []
       },
       "designer": {
-        "model": "openrouter/anthropic/claude-opus-4.8",
+        "model": "openrouter/anthropic/claude-opus-4.7",
         "variant": "medium",
-        "skills": [
-          "agent-browser"
-        ],
+        "skills": [],
         "mcps": []
       },
       "fixer": {
-        "model": "openai/gpt-5.4",
-        "variant": "low",
+        "model": "xai/grok-4.5",
+        "variant": "medium",
         "skills": [],
         "mcps": []
       }
@@ -67,11 +66,11 @@
           "variant": "high"
         },
         "beta": {
-          "model": "google-vertex/gemini-3.1-pro-preview",
+          "model": "xai/grok-4.5",
           "variant": "high"
         },
         "gamma": {
-          "model": "openai/gpt-5.5",
+          "model": "openai/gpt-5.6-sol",
           "variant": "high"
         }
       }
