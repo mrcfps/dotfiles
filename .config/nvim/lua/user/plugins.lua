@@ -71,7 +71,19 @@ require("lazy").setup({
     build = ":TSUpdate",
   },
   "nvim-treesitter/nvim-treesitter-textobjects",
-  "JoosepAlviste/nvim-ts-context-commentstring",
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    init = function()
+      -- Skip the removed nvim-treesitter module API.
+      vim.g.skip_ts_context_commentstring_module = true
+    end,
+    config = function()
+      require("ts_context_commentstring").setup {
+        -- Comment.nvim already asks for the commentstring on demand.
+        enable_autocmd = false,
+      }
+    end,
+  },
 
   "lewis6991/gitsigns.nvim",
 
